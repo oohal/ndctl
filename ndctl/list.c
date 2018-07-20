@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <limits.h>
+#include <syslog.h>
 
 #include <util/json.h>
 #include <util/filter.h>
@@ -55,6 +56,7 @@ static unsigned long listopts_to_flags(void)
 
 struct util_filter_params param;
 
+static bool verbose;
 static int did_fail;
 
 #define fail(fmt, ...) \
@@ -443,6 +445,7 @@ int cmd_list(int argc, const char **argv, void *ctx)
 				"include media errors"),
 		OPT_BOOLEAN('u', "human", &list.human,
 				"use human friendly number formats "),
+		OPT_BOOLEAN('v', "verbose", &verbose, "emit extra debug messages to stderr"),
 		OPT_END(),
 	};
 	const char * const u[] = {
@@ -458,6 +461,9 @@ int cmd_list(int argc, const char **argv, void *ctx)
 		error("unknown parameter \"%s\"\n", argv[i]);
 	if (argc)
 		usage_with_options(u, options);
+
+	if (verbose)
+		ndctl_set_log_priority(ctx, LOG_DEBUG);
 
 	if (num_list_flags() == 0) {
 		list.buses = !!param.bus;
