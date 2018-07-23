@@ -378,3 +378,11 @@ global:
 	ndctl_region_get_max_available_extent;
 	ndctl_cmd_smart_inject_ctrl_temperature;
 } LIBNDCTL_16;
+
+LIBNDCTL_18 {
+global:
+	ndctl_pfn_get_supported_alignment;
+	ndctl_pfn_get_num_alignments;
+	ndctl_dax_get_supported_alignment;
+	ndctl_dax_get_num_alignments;
+} LIBNDCTL_17;

@@ -674,6 +674,12 @@ enum ND_FW_STATUS ndctl_cmd_fw_xlat_firmware_status(struct ndctl_cmd *cmd);
 struct ndctl_cmd *ndctl_dimm_cmd_new_ack_shutdown_count(struct ndctl_dimm *dimm);
 int ndctl_dimm_fw_update_supported(struct ndctl_dimm *dimm);
 
+unsigned int ndctl_pfn_get_num_alignments(struct ndctl_pfn *pfn);
+int ndctl_pfn_get_supported_alignment(struct ndctl_pfn *pfn, int i);
+
+unsigned int ndctl_dax_get_num_alignments(struct ndctl_dax *dax);
+int ndctl_dax_get_supported_alignment(struct ndctl_dax *dax, int i);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
