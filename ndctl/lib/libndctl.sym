@@ -371,4 +371,8 @@ global:
 LIBNDCTL_17 {
 global:
 	ndctl_dimm_smart_inject_supported;
+	ndctl_pfn_get_supported_alignment;
+	ndctl_pfn_get_num_alignments;
+	ndctl_dax_get_supported_alignment;
+	ndctl_dax_get_num_alignments;
 } LIBNDCTL_16;
