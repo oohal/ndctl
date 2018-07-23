@@ -533,8 +533,18 @@ static int validate_namespace_options(struct ndctl_region *region,
 	}
 
 	if (param.align) {
-		if (p->mode != NDCTL_NS_MODE_MEMORY &&
-		    p->mode != NDCTL_NS_MODE_DAX) {
+		int i, alignments;
+
+		switch (p->mode) {
+		case NDCTL_NS_MODE_MEMORY:
+			alignments = ndctl_pfn_get_num_alignments(pfn);
+			break;
+
+		case NDCTL_NS_MODE_DAX:
+			alignments = ndctl_dax_get_num_alignments(dax);
+			break;
+
+		default:
 			error("%s mode does not support setting an alignment\n",
 					p->mode == NDCTL_NS_MODE_SAFE
 					? "sector" : "raw");
@@ -542,13 +552,19 @@ static int validate_namespace_options(struct ndctl_region *region,
 		}
 
 		p->align = parse_size64(param.align);
+		for (i = 0; i < alignments; i++) {
+			uint64_t a;
 
-		switch (p->align) {
-		case SZ_4K:
-		case SZ_2M:
-		case SZ_1G:
-			break;
-		default:
+			if (p->mode == NDCTL_NS_MODE_MEMORY)
+				a = ndctl_pfn_get_supported_alignment(pfn, i);
+			else
+				a = ndctl_dax_get_supported_alignment(dax, i);
+
+			if (p->align == a)
+				break;
+		}
+
+		if (i >= alignments) {
 			error("unsupported align: %s\n", param.align);
 			return -ENXIO;
 		}
