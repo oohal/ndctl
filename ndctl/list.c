@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <limits.h>
+#include <syslog.h>
 
 #include <util/json.h>
 #include <util/filter.h>
@@ -37,6 +38,7 @@ static struct {
 	bool human;
 	bool firmware;
 	int verbose;
+	bool debug;
 } list;
 
 static unsigned long listopts_to_flags(void)
@@ -455,6 +457,8 @@ int cmd_list(int argc, const char **argv, void *ctx)
 				"include media errors"),
 		OPT_BOOLEAN('u', "human", &list.human,
 				"use human friendly number formats "),
+		OPT_BOOLEAN('\0', "debug", &list.debug,
+				"Print libndctl debug to stderr"),
 		OPT_INCR('v', "verbose", &list.verbose,
 				"increase output detail"),
 		OPT_END(),
@@ -480,6 +484,9 @@ int cmd_list(int argc, const char **argv, void *ctx)
 		if (list.dax && !param.mode)
 			param.mode = "dax";
 	}
+
+	if (list.debug)
+		ndctl_set_log_priority(ctx, LOG_DEBUG);
 
 	switch (list.verbose) {
 	default:
