@@ -2846,6 +2846,9 @@ NDCTL_EXPORT int ndctl_cmd_submit_xlat(struct ndctl_cmd *cmd)
 	 * useful), then the xlat function is available separately as well.
 	 */
 	xlat_rc = ndctl_cmd_xlat_firmware_status(cmd);
+	if (xlat_rc == -ENOMSG)
+		return rc;
+
 	return (xlat_rc == 0) ? rc : xlat_rc;
 }
 
